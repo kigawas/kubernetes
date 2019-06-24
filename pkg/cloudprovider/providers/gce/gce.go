@@ -195,6 +195,8 @@ type ConfigGlobal struct {
 	// located in (i.e. where the controller will be running). If this is
 	// blank, then the local zone will be discovered via the metadata server.
 	LocalZone string `gcfg:"local-zone"`
+	// Extra zones among different regions can be specified as ExtraZones
+	ExtraZones []string `gcfg:"extra-zones"`
 	// Default to none.
 	// For example: MyFeatureFlag
 	AlphaFeatures []string `gcfg:"alpha-features"`
@@ -350,6 +352,7 @@ func generateCloudConfig(configFile *ConfigFile) (cloudConfig *CloudConfig, err 
 
 	// generate managedZones
 	cloudConfig.ManagedZones = []string{cloudConfig.Zone}
+	cloudConfig.ManagedZones = append(cloudConfig.ManagedZones, configFile.Global.ExtraZones...)
 	if configFile != nil && (configFile.Global.Multizone || configFile.Global.Regional) {
 		cloudConfig.ManagedZones = nil // Use all zones in region
 	}
